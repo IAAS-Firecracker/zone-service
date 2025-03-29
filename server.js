@@ -32,9 +32,10 @@ let routeHead = "/api";
 
 async function dbConfigurations() {
   // créer la base de donées si elle n'existe pas
-  await db.createDb(process.env.WORKING_DB_NAME || 'zone_service_db');
+  await db.createDb(process.env.DB_NAME || 'zone_service_db');
   
   // Synchroniser les modèles avec la base de données
+  //sequelize.sync({ force: true })
   sequelize.sync({ alter: true })
   .then(() => console.log("Les tables ont été synchronisées"))
   .catch((err) => console.log("Erreur : " + err));
@@ -133,7 +134,7 @@ async function startApplication() {
     });
 
     // Connexion à rabbitmq
-    //await rabbitConfig();
+    await rabbitConfig();
 
     // Démarrage du serveur
     app.listen(port, '0.0.0.0', () => {

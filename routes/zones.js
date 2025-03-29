@@ -1,5 +1,6 @@
 const express = require("express");
 const zoneController = require("../controllers/zoneController");
+const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -92,10 +93,10 @@ const router = express.Router();
  *                 message: "Internal Server Error"
  * 
  */
-router.get('', zoneController.all);
-router.get('/:id', zoneController.get);
-router.post('', zoneController.create);
-router.patch('/:id', zoneController.update);
-router.delete('/:id', zoneController.delete);
+router.get('', authMiddleware, zoneController.all);
+router.get('/:id', authMiddleware, zoneController.get);
+router.post('', authMiddleware, zoneController.create);
+router.patch('/:id', authMiddleware, zoneController.update);
+router.delete('/:id', authMiddleware, zoneController.delete);
 
 module.exports = router;
