@@ -1,5 +1,5 @@
-const db = require('../db');
 const { Zone } = require('../models');
+const { rabbitPublishZone, rabbitPublishNotification } = require('../rabbit-ops');
 
 exports.all = async (req, res) => {
     try {
@@ -30,9 +30,27 @@ exports.get = async (req, res) => {
 
 exports.create = async (req, res) => {
     const { name, center, pricing } = req.body;
+    
     try {
+        const { userId } = req.userData.userId;
         const zone = await Zone.create({ name, center, pricing });
-        
+                
+        const event = {
+            "id": zone.id,
+            center,
+            pricing,
+            type: "CREATE"
+        };
+    
+        const notificationEvent = {
+            "id": userId,
+            message: "Zone créée avec succès" 
+        };
+    
+        rabbitPublishZone(JSON.stringify(event));
+    
+        rabbitPublishNotification(JSON.stringify(notificationEvent));
+
         res.status(201).json({ message: "Zone ajouté avec succès", zone });
     } catch(err) {
         res.status(500).json({
@@ -48,6 +66,8 @@ exports.update = async (req, res) => {
     const { name, center, pricing } = req.body;
 
     try {
+        const { userId } = req.userData.userId;
+
         const zone = await Zone.findOne({ where: { "id": id }});
         
         if(zone != null)
@@ -57,7 +77,23 @@ exports.update = async (req, res) => {
             if(pricing != null) zone.pricing = pricing;
 
             zone.save();
+            
+            const event = {
+                "id": zone.id,
+                "center": zone.center,
+                "pricing": zone.pricing,
+                type: "UPDATE"
+            };
         
+            const notificationEvent = {
+                "id": userId,
+                message: "Zone mise à jour avec succès" 
+            };
+        
+            rabbitPublishZone(JSON.stringify(event));
+        
+            rabbitPublishNotification(JSON.stringify(notificationEvent));
+
             res.status(200).json({ message: "Zone modifiée avec succès", zone });
         } else {
             return res.status(404).json({ message: "Zone inexistante" });
@@ -74,10 +110,26 @@ exports.delete = async (req, res) => {
     const { id } = req.params;
 
     try {
+        const { userId } = req.userData.userId;
+
         const deletedZone = await Zone.destroy({ where: { "id": id } });
 
         if(deletedZone > 0)
         {
+            const event = {
+                "id": deletedZone.id,
+                type: "DELETE"
+            };
+        
+            const notificationEvent = {
+                "id": userId,
+                message: "Zone supprimée avec succès" 
+            };
+        
+            rabbitPublishZone(JSON.stringify(event));
+        
+            rabbitPublishNotification(JSON.stringify(notificationEvent));
+
             res.status(200).json({ message: "Zone supprimée avec succès" });
         }
         else res.status(404).json({ message: "Zone inexistante" });

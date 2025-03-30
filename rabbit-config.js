@@ -53,11 +53,11 @@ exports.rabbitConfig = async () => {
         await channel.assertQueue(queue, { durable: true });
     });
 
-    await channel.bindQueue(OFFER_QUEUE, ZONE_EXCHANGE, "zone.create");
+    await channel.bindQueue(OFFER_QUEUE, ZONE_EXCHANGE, "zone.crud");
 
     await channel.bindQueue(NOTIFICATION_QUEUE, ZONE_EXCHANGE, "notification.create");
 
-    await channel.bindQueue(SERVER_QUEUE, ZONE_EXCHANGE, "server.create");
+    await channel.bindQueue(SERVER_QUEUE, ZONE_EXCHANGE, "server.crud");
 
     /*let queues = [ "userOfferQueue", "userNotificationQueue"];
     queues.forEach(async (queue) => {
@@ -98,7 +98,7 @@ exports.rabbitConfig = async () => {
         //console.log({"message": message});
         //console.log({"content - BDQ": content});
 
-        if(message.fields.routingKey == "user.create")
+        if(message.fields.routingKey == "user.crud")
         {
             let type = content.type;
             let userId = null;

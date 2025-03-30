@@ -1,5 +1,4 @@
 const amqp = require('amqplib');
-const { User } = require('./models/models');
 const { rabbitConfig } = require('./rabbit-config');
 require('dotenv').config();
 

@@ -1,16 +1,16 @@
 const express = require("express");
-const zoneController = require("../controllers/zoneController");
+const serverController = require("../controllers/serverController");
 const isAdminMiddleware = require("../middleware/isAdmin");
 
 const router = express.Router();
 
 /**
  * @swagger
- * /api/zones:
+ * /api/servers:
  *   get:
- *     summary: GET all zones
- *     tags: [Zones]
- *     description: Retourne toutes les zones enregistrees dans la bd
+ *     summary: GET all servers
+ *     tags: [Servers]
+ *     description: Retourne tous les serveurs enregistres dans la bd
  *     responses:
  *       200:
  *         description: OK
@@ -45,20 +45,20 @@ const router = express.Router();
  *                 message: "Internal Server Error"
  * 
  * @swagger
- * /api/zones/{id}:
+ * /api/servers/{id}:
  *   get:
- *     summary: GET any zone with specify id
- *     tags: [Zones]
+ *     summary: GET any server with specify id
+ *     tags: [Servers]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: id de la zone
+ *         description: id de la server
  *         schema:
  *           type: integer
  *         example:
  *           1
- *     description: Retourne la zone possédant l'id correspondante
+ *     description: Retourne la server possédant l'id correspondante
  *     responses:
  *       200:
  *         description: OK
@@ -93,10 +93,11 @@ const router = express.Router();
  *                 message: "Internal Server Error"
  * 
  */
-router.get('', isAdminMiddleware, zoneController.all);
-router.get('/:id', isAdminMiddleware, zoneController.get);
-router.post('', isAdminMiddleware, zoneController.create);
-router.patch('/:id', isAdminMiddleware, zoneController.update);
-router.delete('/:id', isAdminMiddleware, zoneController.delete);
+router.get('', isAdminMiddleware, serverController.all);
+router.get('/:id', isAdminMiddleware, serverController.get);
+router.get('/zone-servers', isAdminMiddleware, serverController.zoneServers);
+router.post('', isAdminMiddleware, serverController.create);
+router.patch('/:id', isAdminMiddleware, serverController.update);
+router.delete('/:id', isAdminMiddleware, serverController.delete);
 
 module.exports = router;

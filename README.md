@@ -67,6 +67,14 @@ npm start
 - `PATCH /api/zones/:id` - Modifier une zone
 - `DELETE /api/zones/:id` - Supprimer une zone
 
+### Serveurs
+
+- `GET /api/servers` - Récupérer tous les serveurs
+- `GET /api/zone-servers` - Récupérer tous les serveurs dans une zone spécifique
+- `GET /api/servers/:id` - Récupérer un serveur spécifique
+- `POST /api/servers` - Creer de nouveaux serveurs
+- `PATCH /api/servers/:id` - Modifier un serveur spécifique
+- `DELETE /api/servers/:id` - Supprimer un serveur spécifique
 
 ## 🧪 Tests
 

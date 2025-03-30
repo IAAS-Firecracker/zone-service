@@ -1,5 +1,6 @@
 const express = require('express');
 const zoneRoutes = require("./routes/zones");
+const serverRoutes = require("./routes/servers");
 const db = require("./db");
 const { sequelize } = require("./models");
 const { Eureka } = require('eureka-js-client');
@@ -115,6 +116,7 @@ async function startApplication() {
 
     // Routes
     app.use(`${routeHead}/zones`, zoneRoutes);
+    app.use(`${routeHead}/servers`, serverRoutes);
 
     // Route pour rafraîchir la configuration
     app.post('/refresh', async (req, res) => {
