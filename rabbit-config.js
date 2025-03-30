@@ -94,7 +94,7 @@ exports.rabbitConfig = async () => {
     
         let content = JSON.parse(message.content.toString());
 
-        console.log("\n");
+        //console.log("\n");
         //console.log({"message": message});
         //console.log({"content - BDQ": content});
 
