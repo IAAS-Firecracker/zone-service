@@ -5,8 +5,8 @@ require('dotenv').config();
 //const RABBITMQ_URL = process.env["RABBIT.URL"];
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
 const ZONE_EXCHANGE = process.env.ZONE_EXCHANGE;
+const ZONE_NOTIFICATION_EXCHANGE = process.env.ZONE_NOTIFICATION_EXCHANGE;
 //const USER_OFFER_EXCHANGE = process.env.USER_OFFER_EXCHANGE;
-//const USER_NOTIFICATION_EXCHANGE = process.env.USER_NOTIFICATION_EXCHANGE;
 
 const ZONE_CONSUMED_QUEUE = "zoneQueue";
 
@@ -42,8 +42,8 @@ exports.rabbitConfig = async () => {
 
     // Création des echanges si ils n'existent pas
     await channel.assertExchange(ZONE_EXCHANGE, 'fanout', { durable: true });
+    await channel.assertExchange(ZONE_NOTIFICATION_EXCHANGE, 'fanout', { durable: true });
     // await channel.assertExchange(USER_OFFER_EXCHANGE, 'fanout', { durable: true });
-    // await channel.assertExchange(USER_NOTIFICATION_EXCHANGE, 'fanout', { durable: true });
 
     // Création des queues si elles n'existent pas (userNotificationQueue) | userId, message, createdAt
     
@@ -53,11 +53,12 @@ exports.rabbitConfig = async () => {
         await channel.assertQueue(queue, { durable: true });
     });
 
-    await channel.bindQueue(OFFER_QUEUE, ZONE_EXCHANGE, "zone.crud");
+    await channel.bindQueue(OFFER_QUEUE, ZONE_EXCHANGE, ""); // zone.crud
 
-    await channel.bindQueue(NOTIFICATION_QUEUE, ZONE_EXCHANGE, "notification.create");
+    // await channel.bindQueue(NOTIFICATION_QUEUE, ZONE_EXCHANGE, ""); // notification.create
+    await channel.bindQueue(NOTIFICATION_QUEUE, ZONE_NOTIFICATION_EXCHANGE, ""); // notification.create
 
-    await channel.bindQueue(SERVER_QUEUE, ZONE_EXCHANGE, "server.crud");
+    await channel.bindQueue(SERVER_QUEUE, ZONE_EXCHANGE, ""); // server.crud
 
     /*let queues = [ "userOfferQueue", "userNotificationQueue"];
     queues.forEach(async (queue) => {
@@ -98,15 +99,15 @@ exports.rabbitConfig = async () => {
         //console.log({"message": message});
         //console.log({"content - BDQ": content});
 
-        if(message.fields.routingKey == "user.crud")
+        if(message.fields.routingKey == "") // user.crud
         {
             let type = content.type;
             let userId = null;
             switch (type) {
                 case "CREATE":
-                    userId = content.id;
-                    let userName = content.name;
-                    let userEmail = content.email;
+                    userId = content.user.id;
+                    let userName = content.user.name;
+                    let userEmail = content.user.email;
                     User.create({
                         "userId": userId,
                         "name": userName,
@@ -121,7 +122,7 @@ exports.rabbitConfig = async () => {
                     break;
                 case "UPDATE":
     
-                    userId = content.id;
+                    userId = content.user.id;
                     
                     User.findOne({ where: { "userId": userId }})
                         .then((user) => {
@@ -145,7 +146,7 @@ exports.rabbitConfig = async () => {
                     
                     break;
                 case "DELETE":
-                    User.destroy({ where: { "userId": content.id }})
+                    User.destroy({ where: { "userId": content.user.id }})
                         .then(() => {
                             console.log("Utilisateur supprimé avec succès");
                         })

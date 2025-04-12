@@ -36,14 +36,18 @@ exports.create = async (req, res) => {
         const zone = await Zone.create({ name, center, pricing });
                 
         const event = {
-            "id": zone.id,
-            center,
-            pricing,
+            zone : {
+                "id": zone.id,
+                center,
+                pricing,
+            },
             type: "CREATE"
         };
     
         const notificationEvent = {
-            "id": userId,
+            user : {
+                "id": userId,
+            },
             message: "Zone créée avec succès" 
         };
     
@@ -79,14 +83,18 @@ exports.update = async (req, res) => {
             zone.save();
             
             const event = {
-                "id": zone.id,
-                "center": zone.center,
-                "pricing": zone.pricing,
+                zone : {
+                    "id": zone.id,
+                    "center": zone.center,
+                    "pricing": zone.pricing,
+                },
                 type: "UPDATE"
             };
         
             const notificationEvent = {
-                "id": userId,
+                user : {
+                    "id": userId,
+                },
                 message: "Zone mise à jour avec succès" 
             };
         
@@ -117,12 +125,16 @@ exports.delete = async (req, res) => {
         if(deletedZone > 0)
         {
             const event = {
-                "id": deletedZone.id,
+                zone : {
+                    "id": deletedZone.id,
+                },
                 type: "DELETE"
             };
         
             const notificationEvent = {
-                "id": userId,
+                user : {
+                    "id": userId,
+                },
                 message: "Zone supprimée avec succès" 
             };
         

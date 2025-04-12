@@ -50,16 +50,21 @@ exports.create = async (req, res) => {
         const server = await Server.create({ ip, port, ram, storage, zoneId });
         
         const event = {
-            "id": server.id,
-            ip,
-            port,
-            ram,
-            storage,
+            server : {
+                "id": server.id,
+                ip,
+                port,
+                ram,
+                storage,
+                zoneId
+            },
             type: "CREATE"
         };
     
         const notificationEvent = {
-            "id": userId,
+            user : {
+                "id": userId,
+            },
             message: "Serveur créé avec succès" 
         };
     
@@ -95,16 +100,20 @@ exports.update = async (req, res) => {
             server.save();
             
             const event = {
-                "id": server.id,
-                "ip": server.ip,
-                "port": server.port,
-                "ram": server.ram,
-                "storage": server.storage,
+                server : {
+                    "id": server.id,
+                    "ip": server.ip,
+                    "port": server.port,
+                    "ram": server.ram,
+                    "storage": server.storage,
+                },
                 type: "UPDATE"
             };
         
             const notificationEvent = {
-                "id": userId,
+                user : {
+                    "id": userId,
+                },
                 message: "Serveur mis à jour avec succès" 
             };
         
@@ -133,12 +142,16 @@ exports.delete = async (req, res) => {
         if(deletedServer > 0)
         {
             const event = {
-                "id": deletedServer.id,
+                server : {
+                    "id": deletedServer.id,
+                },
                 type: "DELETE"
             };
         
             const notificationEvent = {
-                "id": userId,
+                user : {
+                    "id": userId,
+                },
                 message: "Serveur supprimé avec succès" 
             };
         
