@@ -91,13 +91,14 @@ exports.rabbitConfig = async () => {
     });*/
 
     // Souscription à la queue zone pour créer des comptes en cas de changement
+    
     channel.consume(ZONE_CONSUMED_QUEUE, (message) => {
     
         let content = JSON.parse(message.content.toString());
 
-        //console.log("\n");
+        console.log("\n");
         //console.log({"message": message});
-        //console.log({"content - BDQ": content});
+        console.log({"content - BDQ": content});
 
         if(message.fields.routingKey == "") // user.crud
         {
